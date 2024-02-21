@@ -2,10 +2,11 @@ import cx_Oracle
 # src: https://www.geeksforgeeks.org/oracle-database-connection-in-python/
 
 #set connection to database
-user = 'oil'
-password = 'oil1234'
-host = 'localhost'
-sid = 'orcl'
+user = 'AI_663380035_4'
+password = 'oil0984321907'
+host = '10.199.36.10'
+port = '1527'
+sid = 'ORCLCDB'
 
 def getData(table:str, column = "*", condition = '1=1') -> str:
     """
@@ -27,7 +28,7 @@ def getData(table:str, column = "*", condition = '1=1') -> str:
         print('invalid table')
         return
     try:
-        con = cx_Oracle.connect(f'{user}/{password}@{host}:1521/{sid}')
+        con = cx_Oracle.connect(f'{user}/{password}@{host}:{port}/{sid}')
     except cx_Oracle.DatabaseError as er:
         print('There is an error in the Oracle database:' + str(er))
         return
@@ -57,7 +58,7 @@ def insertData(table:str, primary_key:str, values:str) -> bool:
         values (str): insert values like (stdid = '663380035-4', stdfname='ธนรัตน์', stdlname='แซ่เฮีย')
     """
     try:
-        con = cx_Oracle.connect(f'{user}/{password}@{host}:1521/{sid}')
+        con = cx_Oracle.connect(f'{user}/{password}@{host}:{port}/{sid}')
         cursor = con.cursor()
         if not check_primary_key(table=table, primary_key=primary_key):
             print(f"Primary key '{primary_key}' already exists.")
@@ -93,7 +94,7 @@ def updateData(table:str, set:str, condition:str) -> bool:
         condition (str): condition like WHERE stdid = '663380035-4'
     """
     try:
-        con = cx_Oracle.connect(f'{user}/{password}@{host}:1521/{sid}')
+        con = cx_Oracle.connect(f'{user}/{password}@{host}:{port}/{sid}')
         cursor = con.cursor()
         cursor.execute(f'update {table} set {set} where {condition}')
         con.commit()
@@ -110,7 +111,9 @@ def updateData(table:str, set:str, condition:str) -> bool:
         if con:
             con.close()
 
-# print(getData(table="tester"))
+data = getData(table="student")
+for i in data:
+    print(i)
 # insertData(table="tester", primary_key='10', values="'oil', 'haha', 01212155555")
 # print(updateData(table="tester", set="fname = 'heheheheh'", condition="id = 6"))
 
