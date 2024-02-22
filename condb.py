@@ -1,12 +1,13 @@
 import cx_Oracle
 # src: https://www.geeksforgeeks.org/oracle-database-connection-in-python/
+# build tools c++: https://visualstudio.microsoft.com/visual-cpp-build-tools/
 
 #set connection to database
-user = 'AI_663380035_4'
-password = 'oil0984321907'
-host = '10.199.36.10'
-port = '1527'
-sid = 'ORCLCDB'
+user = 'oil'
+password = 'oil1234'
+host = 'localhost'
+port = '1521'
+sid = 'orcl'
 
 def getData(table:str, column = "*", condition = '1=1') -> str:
     """
@@ -15,11 +16,9 @@ def getData(table:str, column = "*", condition = '1=1') -> str:
     Args:
         table (str): table name like "student"
         column (str, optional): column name like (col1, col2, col3). Defaults is "*"
-        condition (str, optional): condition like WHERE stdid = '663380035-4' Defaults is always True
-    Raises:
-        ValueError: _description_
+        condition (str, optional): where condition like stdid = '663380035-4' Defaults is always True
     Returns:
-        _type_: data or error
+        data or error
     """
     if table:
         query_str = f"select {column} from {table} where {condition}"
@@ -52,20 +51,21 @@ def getData(table:str, column = "*", condition = '1=1') -> str:
             con.close()
 
 def insertData(table:str, primary_key:str, values:str) -> bool:
-    """_summary_
+    """
     Args:
         table (str): table name like "student"
-        values (str): insert values like (stdid = '663380035-4', stdfname='ธนรัตน์', stdlname='แซ่เฮีย')
+        values (str): insert values like ('663380035-4', 'ธนรัตน์', 'แซ่เฮีย')
     """
     try:
         con = cx_Oracle.connect(f'{user}/{password}@{host}:{port}/{sid}')
         cursor = con.cursor()
         if not check_primary_key(table=table, primary_key=primary_key):
-            print(f"Primary key '{primary_key}' already exists.")
+            print(f"Primary key '{primary_key}' already exist.")
             return False
         else:
             cursor.execute(f'insert into {table} values({primary_key}, {values})')
             con.commit()
+            print(cursor.rowcount, "row inserted")
             return True
     except cx_Oracle.DatabaseError as e:
         print("There is a problem with Oracle" + str(e))
@@ -80,6 +80,13 @@ def insertData(table:str, primary_key:str, values:str) -> bool:
             con.close()
 
 def check_primary_key(table:str, primary_key:str) -> bool:
+    """
+    Args:
+        table (str): table name like "student".
+        primary_key (str): primary key to check.
+    Returns:
+        bool: return false when primary key already exist.
+    """
     allData = getData(table=table)
     for i in allData:
         if primary_key == str(i[0]):
@@ -87,17 +94,20 @@ def check_primary_key(table:str, primary_key:str) -> bool:
     return True
 
 def updateData(table:str, set:str, condition:str) -> bool:
-    """_summary_
+    """
     Args:
         table (str): table name like "student"
         set (str): set values like stdfname = 'oil'
-        condition (str): condition like WHERE stdid = '663380035-4'
+        condition (str): where condition like stdid = '663380035-4'
+    Returns:
+        bool: return true when everything's okey, if it false you gonna have big problem!
     """
     try:
         con = cx_Oracle.connect(f'{user}/{password}@{host}:{port}/{sid}')
         cursor = con.cursor()
         cursor.execute(f'update {table} set {set} where {condition}')
         con.commit()
+        print(cursor.rowcount, "row updated")
         return True
     except cx_Oracle.DatabaseError as e:
         print("There is a problem with Oracle" + str(e))
@@ -111,9 +121,37 @@ def updateData(table:str, set:str, condition:str) -> bool:
         if con:
             con.close()
 
-data = getData(table="student")
+def deleteData(table:str, condition:str) -> bool:
+    """
+    Args:
+        table (str): table name like "student"
+        condition (str): where condition like stdid = "663380035-4"
+    Returns:
+        bool: return true when everything's okey, if it false you gonna have big problem!
+    """
+    try:
+        con = cx_Oracle.connect(f'{user}/{password}@{host}:{port}/{sid}')
+        cursor = con.cursor()
+        cursor.execute(f'delete from {table} where {condition}')
+        con.commit()
+        print(cursor.rowcount, "row deleted")
+        return True
+    except cx_Oracle.DatabaseError as e:
+        print("There is a problem with Oracle" + str(e))
+        return False
+    except Exception as er:
+        print("Error " + str(er))
+        return False
+    finally:
+        if cursor:
+            cursor.close()
+        if con:
+            con.close()
+
+
+data = getData(table="product_type")
 for i in data:
     print(i)
-# insertData(table="tester", primary_key='10', values="'oil', 'haha', 01212155555")
-# print(updateData(table="tester", set="fname = 'heheheheh'", condition="id = 6"))
-
+# print(deleteData(table="product_type", condition="tid = 'T04'"))
+# print(insertData(table="product_type", primary_key="'T04'", values="'oil'"))
+# print(updateData(table="tester", set="fname = 'hohohoho'", condition="id = 6"))
