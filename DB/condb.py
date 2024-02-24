@@ -9,7 +9,8 @@ host = 'localhost'
 port = '1521'
 sid = 'orcl'
 
-def getData(table:str, column = "*", condition = '1=1') -> str:
+
+def selectData(table:str, column = "*", condition = '1=1') -> str:
     """
     what you want just tell me!!
     
@@ -19,13 +20,9 @@ def getData(table:str, column = "*", condition = '1=1') -> str:
         condition (str, optional): where condition like stdid = '663380035-4' Defaults is always True
     Returns:
         data or error
+    
+    SELECT * FROM student WHERE 1=1;
     """
-    if table:
-        query_str = f"select {column} from {table} where {condition}"
-        # print(query_str)
-    else:
-        print('invalid table')
-        return
     try:
         con = cx_Oracle.connect(f'{user}/{password}@{host}:{port}/{sid}')
     except cx_Oracle.DatabaseError as er:
@@ -34,7 +31,7 @@ def getData(table:str, column = "*", condition = '1=1') -> str:
     else:
         try:
             cursor = con.cursor()
-            cursor.execute(query_str)
+            cursor.execute(f"select {column} from {table} where {condition}")
             rows = cursor.fetchall()
             return rows
         except cx_Oracle.DatabaseError as er:
@@ -87,7 +84,7 @@ def check_primary_key(table:str, primary_key:str) -> bool:
     Returns:
         bool: return false when primary key already exist.
     """
-    allData = getData(table=table)
+    allData = selectData(table=table)
     for i in allData:
         if primary_key == str(i[0]):
             return False
@@ -149,7 +146,7 @@ def deleteData(table:str, condition:str) -> bool:
             con.close()
 
 
-data = getData(table="product_type")
+data = selectData(table="product_type")
 for i in data:
     print(i)
 # print(deleteData(table="product_type", condition="tid = 'T04'"))

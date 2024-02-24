@@ -1,0 +1,60 @@
+Name : ford for you.
+
+-----------------------------------------
+ประชุม มื่ออื่น 20.30 น.
+
+to do list
+1.ชื่อโครงงานคนละชื่อ
+2.Er Diagram
+3.recheck วัตถุประสงค์ คำอธิบายโครงงาน
+-----------------------------------------
+
+
+https://www.kaggle.com/datasets/adhurimquku/ford-car-price-prediction
+
+user
+   userID (PK)
+  name
+  pass
+  phone_num
+  bank_accout_number
+  is_admin (default = false)
+
+ประวัติการขาย
+  ID (PK)
+  sell_price (response from ai)
+  lisense_plate
+  status (ขายแล้ว, รอยืนยัน)
+  mileage (ระยะทางที่ใช้งาน)
+    path_picture (รูปของรถยนต์)
+  car_id (FK)
+  userID (FK)
+
+car (model)
+  car_id (PK)
+  model_name
+  production_year
+  engine_size
+  miles_per_gallon
+  fuel_id (FK)
+  type_id (FK)
+
+fuel
+  id (PK)
+  type (petrol, diesel, hybrid)
+
+car_type
+  type_id (PK)
+  car_type (เกียร์กระปุก, ออโต้, กึ่ง)
+
+
+
+
+
+1 | oil | renger | 200 | pic | 
+2 | oil | renger | 200 | pic |  
+
+  
+
+
+  
