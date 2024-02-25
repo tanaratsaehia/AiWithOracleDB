@@ -1,6 +1,11 @@
 import streamlit as st
 st.set_page_config(initial_sidebar_state="collapsed", page_title="Register")
 
+# try:
+#     print(st.session_state.user_data)
+# except:
+#     print(st.session_state)
+
 with st.container(border=True):
     st.title('Register')
     username = st.text_input('Username')
@@ -39,7 +44,7 @@ with st.container(border=True):
 st.markdown(
     """
     <style>
-    #root > div:nth-child(1) > div > div > div > div > section > div {padding-top: 4%;}
+    #root > div:nth-child(1) > div > div > div > div > section > div {padding-top: 6%;}
     .eczjsme1 {
         display: none;
     }
