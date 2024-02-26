@@ -11,9 +11,11 @@ st.set_page_config(initial_sidebar_state="collapsed", page_title="Login")
 # if ('ai_model' in st.session_state):   
 #     print("deleted")
 #     del st.session_state.ai_model
+if 'offer_price' in st.session_state:
+    st.session_state.offer_price = None
 
 with st.container(border=True):
-    st.title('Login')
+    st.title('Login', anchor=False)
     user_name = st.text_input('Username')
     password = st.text_input('Password', type='password')
 
@@ -31,6 +33,7 @@ with st.container(border=True):
         if user_name and password:
             
             user_data = con.selectData(table='users', condition=f"user_name='{user_name}'")
+            print(user_data)
             
             if len(user_data) <= 0:
                 alert_box.error('invalid username or password', icon="⚠️")

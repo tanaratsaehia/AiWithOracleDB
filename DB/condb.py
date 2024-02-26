@@ -146,9 +146,9 @@ def deleteData(table:str, condition:str) -> bool:
             con.close()
 
 
-data = selectData(table="product_type")
-for i in data:
-    print(i)
+# data = selectData(table="product_type")
+# for i in data:
+#     print(i)
 # print(deleteData(table="product_type", condition="tid = 'T04'"))
 # print(insertData(table="product_type", primary_key="'T04'", values="'oil'"))
 # print(updateData(table="tester", set="fname = 'hohohoho'", condition="id = 6"))

@@ -10,6 +10,13 @@ st.set_page_config(initial_sidebar_state="collapsed", page_title="sale")
 # except:
 #     print(st.session_state) 
 
+
+# INITIAL STATE
+if 'offer_price' not in st.session_state or 'offer_btn_state' not in st.session_state:
+    st.session_state.offer_price = None
+    st.session_state.offer_btn_state = False
+
+
 model_mapping = {
     'Fiesta': 0,
     'Focus': 1,
@@ -77,7 +84,7 @@ else:
     st.session_state.ai_model = loaded_model
 
 with st.container(border=True):
-    st.title(f'Welcome {user_data[1]} to Sale page')
+    st.title(f'Welcome {user_data[1]} to Sale page', anchor=False)
     uploaded_file_box = st.empty()
     uploaded_file = st.file_uploader("Upload your car picture")
     if uploaded_file:
@@ -98,7 +105,6 @@ with st.container(border=True):
     empty_box = st.empty()
     # st.markdown("<div></div>", unsafe_allow_html=True)
     submit_btn = st.button(label='See offer price', use_container_width=True)
-    
     if submit_btn:
         if uploaded_file and model and produc_year and produc_year and engine_size and trans and fuel and mile_per_gal and mile_used:
             try:
@@ -106,7 +112,7 @@ with st.container(border=True):
                 try:
                     offer_price = ai_model.predict([format_data])
                     offer_price = int(offer_price[0])
-                    empty_box.info(f'Offer price is {offer_price:,} dollar')
+                    st.session_state.offer_price = offer_price
                     print('\nformat data:', format_data)
                     print('offer price:', offer_price)
                 except:
@@ -114,8 +120,39 @@ with st.container(border=True):
                     empty_box.error('Ai error', icon="⚠️")
             except:
                 empty_box.warning('Please fill only number in Production year, Engine size, Mile per gallon, Mile used', icon="⚠️")
+                st.session_state.offer_price = None
         else:
             empty_box.warning('Please fill up this form', icon="⚠️")
+            st.session_state.offer_price = None
+
+if st.session_state.offer_price:
+    offer_price = st.session_state.offer_price
+    with st.container(border=True):
+        st.subheader('Confirm price', anchor=False)
+        st.info(f'we offer {offer_price:,} dollar')
+        
+        offer_box = st.empty()
+        alert_box = st.empty()
+        
+        col1, col2= st.columns([1, 3])
+        col1_container = col1.empty()
+        col2_container = col2.empty()
+        offer_btn = col1_container.button(label='Offer', use_container_width=True)
+        accept_btn = col2_container.button(label='Accept', type='primary', use_container_width=True)
+        
+        if offer_btn:
+            col1_container.empty()
+            col2_container.empty()
+            user_offer = offer_box.text_input(label='Offer your price', value=offer_price)
+            confirm_offer_btn = st.button(label='Confirm offer', type='primary', use_container_width=True)
+            
+            if confirm_offer_btn:
+                try:
+                    user_offer = int(user_offer)
+                    time.sleep(2)
+                    print("here")
+                except:
+                    alert_box.warning('Please fill number', icon="⚠️")
 
 st.markdown(
     """
@@ -145,25 +182,23 @@ st.markdown(
         color: #00ccff !important;
         border-color: #00ccff !important;
     }
-    button[kind="primary"] {
-        background: none!important;
-        border: none;
-        padding: 0!important;
-        color: white !important;
-        text-decoration: none;
-        cursor: pointer;
-        border: none !important;
+    .st-emotion-cache-1n9qh9a {
+        border-radius: 0.5rem;
+        border: 1px solid rgba(250, 250, 250, 0.2);
     }
-    button[kind="primary"]:hover {
+    .st-emotion-cache-1n9qh9a:hover {
         text-decoration: none;
-        color: #00ccff !important;
+        color: #33cc33 !important;
+        border-color: #33cc33 !important;
     }
-    button[kind="primary"]:focus {
-        outline: none !important;
-        box-shadow: none !important;
-        color: white !important;
+    .st-emotion-cache-1n9qh9a:focus {
+        text-decoration: none;
+        color: #33cc33 !important;
+        border-color: #33cc33 !important;
     }
     </style>
     """,
     unsafe_allow_html=True,
 )
+
+

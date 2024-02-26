@@ -12,7 +12,9 @@ def open_image(path: str):
 path_pic = 'D:/KKU_World/1_2/DBMS/termProject/python/Ui/public/picture/'
 # path_pic = '../public/picture/'
 table_data = []
+
 car_data = con.selectData(table='admin_sale_history_data')
+
 for i in car_data:
     table_data.append({'pic': open_image(path_pic+i[0]), 
                         'user': (str(i[1]) + ' '+ i[2]), 
@@ -30,7 +32,7 @@ for i in car_data:
 # print(table_data[0]['pic'])
 
 with st.container(border=True):
-    st.title('Sale history for Admin')
+    st.title('Sale history for Admin', anchor=False)
     edited_df = st.data_editor(table_data, width=1500, height=400, column_config={
                                                             "pic": st.column_config.ImageColumn(
                                                             "pic", help="form user uplaod"
