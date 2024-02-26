@@ -62,7 +62,7 @@ def insertData(table:str, primary_key:str, values:str) -> bool:
         else:
             cursor.execute(f'insert into {table} values({primary_key}, {values})')
             con.commit()
-            print(cursor.rowcount, "row inserted")
+            print(table, cursor.rowcount, "row inserted")
             return True
     except cx_Oracle.DatabaseError as e:
         print("There is a problem with Oracle" + str(e))
@@ -104,7 +104,7 @@ def updateData(table:str, set:str, condition:str) -> bool:
         cursor = con.cursor()
         cursor.execute(f'update {table} set {set} where {condition}')
         con.commit()
-        print(cursor.rowcount, "row updated")
+        print(table, cursor.rowcount, "row updated")
         return True
     except cx_Oracle.DatabaseError as e:
         print("There is a problem with Oracle" + str(e))
@@ -131,7 +131,7 @@ def deleteData(table:str, condition:str) -> bool:
         cursor = con.cursor()
         cursor.execute(f'delete from {table} where {condition}')
         con.commit()
-        print(cursor.rowcount, "row deleted")
+        print(table, cursor.rowcount, "row deleted")
         return True
     except cx_Oracle.DatabaseError as e:
         print("There is a problem with Oracle" + str(e))
@@ -144,11 +144,3 @@ def deleteData(table:str, condition:str) -> bool:
             cursor.close()
         if con:
             con.close()
-
-
-# data = selectData(table="product_type")
-# for i in data:
-#     print(i)
-# print(deleteData(table="product_type", condition="tid = 'T04'"))
-# print(insertData(table="product_type", primary_key="'T04'", values="'oil'"))
-# print(updateData(table="tester", set="fname = 'hohohoho'", condition="id = 6"))
