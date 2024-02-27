@@ -50,6 +50,12 @@ def get_data():
         st.error('Database Error', icon='❌')
         return None
 
+with st.container(border=False):
+    to_sale_btn = st.button('Go to sale page', use_container_width=True)
+    
+    if to_sale_btn:
+        st.switch_page('pages/sale.py')
+
 with st.container(border=True):
     user_name = user_data[1]
     st.title(f'{user_name} sale history', anchor=False)
@@ -58,3 +64,51 @@ with st.container(border=True):
                                                             "pic": st.column_config.ImageColumn(
                                                             "pic", help="form user uplaod"
                                                         )})
+
+
+st.markdown(
+    """
+    <style>
+    #root > div:nth-child(1) > div > div > div > div > section > div {padding-top: 6%;}
+    .eczjsme1 {
+        display: none;
+    }
+    .st-b9:hover{
+        border-color: #00ccff !important;
+        box-shadow: 3px #00ccff !important;
+    }
+    .st-by:hover{
+        border-color: #00ccff !important;
+        box-shadow: 3px #00ccff !important;
+    }
+    button {
+        background: none!important;
+    }
+    button:hover {
+        text-decoration: none;
+        color: #00ccff !important;
+        border-color: #00ccff !important;
+    }
+    button:focus {
+        text-decoration: none;
+        color: #00ccff !important;
+        border-color: #00ccff !important;
+    }
+    .st-emotion-cache-1n9qh9a {
+        border-radius: 0.5rem;
+        border: 1px solid rgba(250, 250, 250, 0.2);
+    }
+    .st-emotion-cache-1n9qh9a:hover {
+        text-decoration: none;
+        color: #33cc33 !important;
+        border-color: #33cc33 !important;
+    }
+    .st-emotion-cache-1n9qh9a:focus {
+        text-decoration: none;
+        color: #33cc33 !important;
+        border-color: #33cc33 !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)

@@ -111,7 +111,7 @@ else:
     st.session_state.ai_model = loaded_model
 
 with st.container(border=False):
-    to_sale_history_btn = st.button('back to sale history', use_container_width=True)
+    to_sale_history_btn = st.button('Go to sale history', use_container_width=True)
     
     if to_sale_history_btn:
         st.switch_page('pages/sale_history.py')
