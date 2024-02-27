@@ -13,10 +13,12 @@ st.set_page_config(initial_sidebar_state="collapsed", page_title="sale")
 
 
 # INITIAL STATE
-if 'ai_offer_price' not in st.session_state or 'offer_btn_state' not in st.session_state:
+if 'ai_offer_price' not in st.session_state or 'offer_btn_state' not in st.session_state or 'accept_btn_state' not in st.session_state or 'to_sale_page_button_state' not in st.session_state or 'confirm_offer_btn_state' not in st.session_state:
     st.session_state.ai_offer_price = None
     st.session_state.offer_btn_state = False
-
+    st.session_state.accept_btn_state = False
+    st.session_state.to_sale_page_button_state = False
+    st.session_state.confirm_offer_btn_state = False
 
 model_mapping = {
     'Fiesta': 0,
@@ -81,6 +83,9 @@ def find_car_id(model,  production_year, engine_size, miles_per_gallon, trans_id
         format_insert_data = f"'{model}', {production_year}, {engine_size}, {miles_per_gallon}, {trans_id}, {fuel_id}"
         max_car_id = con.selectData(table='car', column='max(car_id)')
         max_car_id = max_car_id[0][0]
+        
+        if max_car_id == None:
+            max_car_id = 0
         con.insertData(table='car', primary_key=max_car_id+1, values=format_insert_data)
         return max_car_id+1
     else:
@@ -92,7 +97,7 @@ else:
     print(formatted_time,'user data not found! ', st.session_state)
     st.error('user data not found! redirect to login', icon='❌')
     time.sleep(3)
-    st.switch_page("main.py")
+    st.switch_page("pages/login.py")
 
 if ('ai_model' in st.session_state):
     ai_model = st.session_state.ai_model
@@ -104,6 +109,12 @@ else:
                 loaded_model = pickle.load(f)
     ai_model = loaded_model
     st.session_state.ai_model = loaded_model
+
+with st.container(border=False):
+    to_sale_history_btn = st.button('back to sale history', use_container_width=True)
+    
+    if to_sale_history_btn:
+        st.switch_page('pages/sale_history.py')
 
 with st.container(border=True):
     st.title(f'Welcome {user_data[1]} to Sale page', anchor=False)
@@ -162,17 +173,24 @@ if st.session_state.ai_offer_price:
         
         offer_btn = col1_container.button(label='Offer', use_container_width=True)
         accept_btn = col2_container.button(label='Accept', type='primary', use_container_width=True)
-        
-        
+
         user_id = st.session_state.user_data[0]
         user_name = st.session_state.user_data[1]
         max_sale_his_primary = con.selectData(table='sales_history', column='max(sale_id)')
         max_sale_his_primary = max_sale_his_primary[0][0]
+        
+        if max_sale_his_primary == None:
+            max_sale_his_primary = 0
         file_name = f'{user_name}_{max_sale_his_primary+1}.png'
         
         if offer_btn:
             st.session_state.offer_btn_state = True
+            st.session_state.accept_btn_state = False
         elif accept_btn:
+            st.session_state.offer_btn_state = False
+            st.session_state.accept_btn_state = True
+        
+        if st.session_state.accept_btn_state:
             try:
                 try:
                     save_image(uploaded_file, file_name)
@@ -180,18 +198,29 @@ if st.session_state.ai_offer_price:
                     format_insert_data = f"'{user_id}', 'user confirm', '{file_name}', '{mile_used}', '{ai_offer_price}', null, null, '{license_plate}', '{car_id}'"
                     con.insertData(table='sales_history', primary_key=max_sale_his_primary+1, values=format_insert_data)
                     alert_box.success('Data saved please wait response from admin', icon='✅')
+                    
+                    col1_container.empty()
+                    col2_container.empty()
+                    to_sale_page_button = st.button('Go to sales history', use_container_width=True)
+                    if to_sale_page_button:
+                        st.session_state.accept_btn_state = False
+                        st.session_state.to_sale_page_button_state = True
                 except:
                     alert_box.error('Database Error', icon="⚠️")
             except:
                 alert_box.warning('Please fill number', icon="⚠️")
+            
         
         if st.session_state.offer_btn_state:
             col1_container.empty()
             col2_container.empty()
+            confirm_offer_btn_container = st.empty()
             user_offer_price = offer_box.text_input(label='Offer your price', value=ai_offer_price)
-            confirm_offer_btn = st.button(label='Confirm offer', type='primary', use_container_width=True)
-            
+            confirm_offer_btn = confirm_offer_btn_container.button(label='Confirm offer', type='primary', use_container_width=True)
             if confirm_offer_btn:
+                st.session_state.confirm_offer_btn_state = True
+            
+            if st.session_state.confirm_offer_btn_state:
                 try:
                     user_offer_price = int(user_offer_price)
                     try:
@@ -200,12 +229,26 @@ if st.session_state.ai_offer_price:
                         format_insert_data = f"'{user_id}', 'user offer', '{file_name}', '{mile_used}', '{ai_offer_price}', '{user_offer_price}', null, '{license_plate}', '{car_id}'"
                         con.insertData(table='sales_history', primary_key=max_sale_his_primary+1, values=format_insert_data)
                         alert_box.success('Data saved please wait response from admin', icon='✅')
+                        
+                        confirm_offer_btn_container.empty()
+                        col1_container.empty()
+                        col2_container.empty()
+                        to_sale_page_button = st.button('Go to sales history', use_container_width=True)
+                        print(st.session_state.confirm_offer_btn_state)
+                        if to_sale_page_button:
+                            print('Good')
+                            st.session_state.confirm_offer_btn_state = False
+                            st.session_state.to_sale_page_button_state = True
+                            st.session_state.offer_btn_state = False
                     except:
                         alert_box.error('Database Error', icon="⚠️")
                 except:
                     alert_box.warning('Please fill number', icon="⚠️")
-                finally:
-                    st.session_state.offer_btn_state = False
+        
+        if st.session_state.to_sale_page_button_state:
+            st.session_state.ai_offer_price = None
+            st.session_state.to_sale_page_button_state = False
+            st.switch_page('pages/sale_history.py')
 
 
 

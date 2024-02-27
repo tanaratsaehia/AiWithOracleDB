@@ -3,11 +3,17 @@ import cx_Oracle
 # build tools c++: https://visualstudio.microsoft.com/visual-cpp-build-tools/
 
 #set connection to database
-user = 'oil'
-password = 'oil1234'
-host = 'localhost'
-port = '1521'
-sid = 'orcl'
+user = 'FINAL_PROJECT_G02'
+password = 'gay1234'
+host = '10.199.36.10'
+port = '1527'
+sid = 'ORCLCDB'
+
+# user = 'oil'
+# password = 'oil1234'
+# host = 'localhost'
+# port = '1521'
+# sid = 'orcl'
 
 
 def selectData(table:str, column = "*", condition = '1=1') -> str:
@@ -146,7 +152,7 @@ def deleteData(table:str, condition:str) -> bool:
             con.close()
 
 
-# data = selectData(table="product_type")
+# data = selectData(table="fuel")
 # for i in data:
 #     print(i)
 # print(deleteData(table="product_type", condition="tid = 'T04'"))

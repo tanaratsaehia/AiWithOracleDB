@@ -35,6 +35,14 @@ create table sales_history(
     constraint sale_pk primary key(sale_id, user_id),
     constraint sh_fk FOREIGN key(car_id) references car(car_id)
 );
+-- State
+-- 1.user offer
+-- 2.admin offer
+-- 3.user confirm
+-- 4.admin confirm
+-- 5.already paid
+-- 6.user cancel
+
 
 -- edit --
 create table users(
@@ -50,3 +58,13 @@ create table users(
 );
 -- ex insert
 -- insert into users values (1, 'oil', '4c39de83231366548c7756c3ff20f1ad97c1b6c3', '0984321907', null, 'หลังมอ', null, '0984321907', 'กรุงโรม');
+
+
+-- CREATE USER FINAL_PROJECT_G02
+-- IDENTIFIED BY gay1234
+-- DEFAULT TABLESPACE users
+-- TEMPORARY TABLESPACE temp
+-- QUOTA UNLIMITED ON users;
+
+-- GRANT CONNECT TO FINAL_PROJECT_G02;
+-- GRANT RESOURCE TO FINAL_PROJECT_G02;

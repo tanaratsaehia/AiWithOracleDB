@@ -26,7 +26,7 @@ for i in car_data:
                         'predict price': i[8], 
                         'user offer price': i[9],
                         'admin offer price': i[10],
-                        'action': False
+                        'status': i[11]
                         })
 
 # print(table_data[0]['pic'])

@@ -48,6 +48,8 @@ with st.container(border=True):
                     try:
                         max_primary = con.selectData(table='users', column='max(user_id)')
                         max_primary = max_primary[0][0]
+                        if max_primary == None:
+                            max_primary = 0
                         # insert into users values (1, 'oil', '4c39de83231366548c7756c3ff20f1ad97c1b6c3', '0984321907', null, 'หลังมอ', 'user', '0984321907', 'กรุงโรม');
                         insert_state = con.insertData(table='users', primary_key=max_primary+1, values=insert_data)
                         if insert_state:

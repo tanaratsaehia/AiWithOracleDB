@@ -3,11 +3,17 @@ import cx_Oracle
 # build tools c++: https://visualstudio.microsoft.com/visual-cpp-build-tools/
 
 #set connection to database
-user = 'oil'
-password = 'oil1234'
-host = 'localhost'
-port = '1521'
-sid = 'orcl'
+# user = 'oil'
+# password = 'oil1234'
+# host = 'localhost'
+# port = '1521'
+# sid = 'orcl'
+
+user = 'FINAL_PROJECT_G02'
+password = 'gay1234'
+host = '10.199.36.10'
+port = '1527'
+sid = 'ORCLCDB'
 
 
 def selectData(table:str, column = "*", condition = '1=1') -> str:
@@ -44,6 +50,25 @@ def selectData(table:str, column = "*", condition = '1=1') -> str:
             if cursor:
                 cursor.close()
     finally:
+        if con:
+            con.close()
+
+def querySelect(queryStr):
+    try:
+        con = cx_Oracle.connect(f'{user}/{password}@{host}:{port}/{sid}')
+        cursor = con.cursor()
+        cursor.execute(queryStr)
+        rows = cursor.fetchall()
+        return rows
+    except cx_Oracle.DatabaseError as e:
+        print("There is a problem with Oracle" + str(e))
+        return False
+    except Exception as er:
+        print("Error " + str(er))
+        return False
+    finally:
+        if cursor:
+            cursor.close()
         if con:
             con.close()
 

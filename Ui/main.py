@@ -8,6 +8,5 @@ with st.container(border=False):
             loaded_model = pickle.load(f)
 
 st.session_state.ai_model = loaded_model
-# print(type(loaded_model))
 
 st.switch_page("pages/login.py")
