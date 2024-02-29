@@ -44,7 +44,7 @@ with st.container(border=True):
                     alert_box.warning(f'username "{username}" already used', icon="⚠️")
                 else:
                     hash_pass = hashlib.sha1(password.encode())
-                    insert_data = f"'{username}', '{hash_pass.hexdigest()}', '{phone_number}', null, '{address}', 'user', '{bank_number}', '{bank_name}'"
+                    insert_data = f"'{username}', '{hash_pass.hexdigest()}', '{phone_number}', '{email}', '{address}', 'user', '{bank_number}', '{bank_name}'"
                     try:
                         max_primary = con.selectData(table='users', column='max(user_id)')
                         max_primary = max_primary[0][0]

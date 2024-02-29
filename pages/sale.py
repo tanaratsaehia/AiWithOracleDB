@@ -139,7 +139,7 @@ with st.container(border=True):
     
     submit_btn = st.button(label='See offer price', use_container_width=True)
     if submit_btn:
-        if uploaded_file and model and produc_year and produc_year and engine_size and trans and fuel and mile_per_gal and mile_used:
+        if uploaded_file and model and produc_year and engine_size and trans and fuel and mile_per_gal and mile_used:
             try:
                 format_data = [int(model_mapping[model]), int(produc_year), int(transmission_mapping[trans]), float(mile_used), int(fuel_mapping[fuel]), float(mile_per_gal), float(engine_size)]
                 try:

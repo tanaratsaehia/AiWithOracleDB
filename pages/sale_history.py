@@ -8,6 +8,7 @@ st.set_page_config(initial_sidebar_state="collapsed", page_title="sale history",
 
 if 'user_data' in st.session_state:
     user_data = st.session_state.user_data
+    st.session_state.ai_offer_price = None
 else:
     current_time = datetime.now()
     formatted_time = current_time.strftime("%Y-%m-%d %H:%M:%S")
@@ -33,7 +34,7 @@ def get_data():
     path_pic = 'D:/KKU_World/1_2/DBMS/termProject/python/Ui/public/picture/'
     table_data = []
     try:
-        car_data = con.querySelect(query_str)   
+        car_data = con.querySql(query_str)   
         for i in car_data:
             table_data.append({'pic': open_image(path_pic+i[0]), 
                                 'car model': i[1], 

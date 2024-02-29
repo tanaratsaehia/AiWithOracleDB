@@ -3,17 +3,17 @@ import cx_Oracle
 # build tools c++: https://visualstudio.microsoft.com/visual-cpp-build-tools/
 
 #set connection to database
-user = 'FINAL_PROJECT_G02'
-password = 'gay1234'
-host = '10.199.36.10'
-port = '1527'
-sid = 'ORCLCDB'
-
 # user = 'oil'
 # password = 'oil1234'
 # host = 'localhost'
 # port = '1521'
 # sid = 'orcl'
+
+user = 'FINAL_PROJECT_G02'
+password = 'gay1234'
+host = '10.199.36.10'
+port = '1527'
+sid = 'ORCLCDB'
 
 
 def selectData(table:str, column = "*", condition = '1=1') -> str:
@@ -53,6 +53,25 @@ def selectData(table:str, column = "*", condition = '1=1') -> str:
         if con:
             con.close()
 
+def querySql(queryStr):
+    try:
+        con = cx_Oracle.connect(f'{user}/{password}@{host}:{port}/{sid}')
+        cursor = con.cursor()
+        cursor.execute(queryStr)
+        rows = cursor.fetchall()
+        return rows
+    except cx_Oracle.DatabaseError as e:
+        print("There is a problem with Oracle" + str(e))
+        return False
+    except Exception as er:
+        print("Error " + str(er))
+        return False
+    finally:
+        if cursor:
+            cursor.close()
+        if con:
+            con.close()
+
 def insertData(table:str, primary_key:str, values:str) -> bool:
     """
     Args:
@@ -68,7 +87,7 @@ def insertData(table:str, primary_key:str, values:str) -> bool:
         else:
             cursor.execute(f'insert into {table} values({primary_key}, {values})')
             con.commit()
-            print(cursor.rowcount, "row inserted")
+            print(table, cursor.rowcount, "row inserted")
             return True
     except cx_Oracle.DatabaseError as e:
         print("There is a problem with Oracle" + str(e))
@@ -110,7 +129,7 @@ def updateData(table:str, set:str, condition:str) -> bool:
         cursor = con.cursor()
         cursor.execute(f'update {table} set {set} where {condition}')
         con.commit()
-        print(cursor.rowcount, "row updated")
+        print(table, cursor.rowcount, "row updated")
         return True
     except cx_Oracle.DatabaseError as e:
         print("There is a problem with Oracle" + str(e))
@@ -137,7 +156,7 @@ def deleteData(table:str, condition:str) -> bool:
         cursor = con.cursor()
         cursor.execute(f'delete from {table} where {condition}')
         con.commit()
-        print(cursor.rowcount, "row deleted")
+        print(table, cursor.rowcount, "row deleted")
         return True
     except cx_Oracle.DatabaseError as e:
         print("There is a problem with Oracle" + str(e))
@@ -150,11 +169,3 @@ def deleteData(table:str, condition:str) -> bool:
             cursor.close()
         if con:
             con.close()
-
-
-# data = selectData(table="fuel")
-# for i in data:
-#     print(i)
-# print(deleteData(table="product_type", condition="tid = 'T04'"))
-# print(insertData(table="product_type", primary_key="'T04'", values="'oil'"))
-# print(updateData(table="tester", set="fname = 'hohohoho'", condition="id = 6"))
