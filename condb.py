@@ -9,12 +9,6 @@ import cx_Oracle
 # port = '1521'
 # sid = 'orcl'
 
-user = 'FINAL_PROJECT_G02'
-password = 'gay1234'
-host = '10.199.36.10'
-port = '1527'
-sid = 'ORCLCDB'
-
 
 def selectData(table:str, column = "*", condition = '1=1') -> str:
     """
@@ -53,7 +47,13 @@ def selectData(table:str, column = "*", condition = '1=1') -> str:
         if con:
             con.close()
 
-def querySql(queryStr):
+def querySql(queryStr:str):
+    """
+    Args:
+        queryStr str: sql for query
+    Returns:
+        value of query string or list
+    """
     try:
         con = cx_Oracle.connect(f'{user}/{password}@{host}:{port}/{sid}')
         cursor = con.cursor()
