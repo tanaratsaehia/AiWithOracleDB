@@ -49,7 +49,6 @@ with st.container(border=True):
 st.markdown(
     """
     <style>
-    #root > div:nth-child(1) > div > div > div > div > section > div {padding-top: 6%;}
     .eczjsme1 {
         display: none;
     }

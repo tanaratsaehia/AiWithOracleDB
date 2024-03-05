@@ -43,21 +43,22 @@ with st.container(border=True):
                 if len(find_user) > 0:
                     alert_box.warning(f'username "{username}" already used', icon="⚠️")
                 else:
-                    hash_pass = hashlib.sha1(password.encode())
-                    insert_data = f"'{username}', '{hash_pass.hexdigest()}', '{phone_number}', '{email}', '{address}', 'user', '{bank_number}', '{bank_name}'"
-                    try:
-                        max_primary = con.selectData(table='users', column='max(user_id)')
-                        max_primary = max_primary[0][0]
-                        if max_primary == None:
-                            max_primary = 0
-                        # insert into users values (1, 'oil', '4c39de83231366548c7756c3ff20f1ad97c1b6c3', '0984321907', null, 'หลังมอ', 'user', '0984321907', 'กรุงโรม');
-                        insert_state = con.insertData(table='users', primary_key=max_primary+1, values=insert_data)
-                        if insert_state:
-                            alert_box.success('register complete please go to login', icon='✅')
-                        else:
-                            alert_box.warning('something wrong please try again', icon="⚠️")
-                    except:
-                        alert_box.error('database error', icon="❌")
+                    with st.spinner('Loading...'):
+                        hash_pass = hashlib.sha1(password.encode())
+                        insert_data = f"'{username}', '{hash_pass.hexdigest()}', '{phone_number}', '{email}', '{address}', 'user', '{bank_number}', '{bank_name}'"
+                        try:
+                            max_primary = con.selectData(table='users', column='max(user_id)')
+                            max_primary = max_primary[0][0]
+                            if max_primary == None:
+                                max_primary = 0
+                            # insert into users values (1, 'oil', '4c39de83231366548c7756c3ff20f1ad97c1b6c3', '0984321907', null, 'หลังมอ', 'user', '0984321907', 'กรุงโรม');
+                            insert_state = con.insertData(table='users', primary_key=max_primary+1, values=insert_data)
+                            if insert_state:
+                                alert_box.success('register complete please go to login', icon='✅')
+                            else:
+                                alert_box.warning('something wrong please try again', icon="⚠️")
+                        except:
+                            alert_box.error('database error', icon="❌")
             else:
                 alert_box.warning('Please fill up this form', icon="⚠️")
 

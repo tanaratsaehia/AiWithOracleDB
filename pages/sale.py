@@ -13,12 +13,13 @@ st.set_page_config(initial_sidebar_state="collapsed", page_title="sale")
 
 
 # INITIAL STATE
-if 'ai_offer_price' not in st.session_state or 'offer_btn_state' not in st.session_state or 'accept_btn_state' not in st.session_state or 'to_sale_page_button_state' not in st.session_state or 'confirm_offer_btn_state' not in st.session_state:
+if 'ai_offer_price' not in st.session_state or 'offer_btn_state' not in st.session_state or 'accept_btn_state' not in st.session_state or 'to_sale_page_button_state' not in st.session_state or 'confirm_offer_btn_state' not in st.session_state or 'insert_sale_his_state' not in st.session_state:
     st.session_state.ai_offer_price = None
     st.session_state.offer_btn_state = False
     st.session_state.accept_btn_state = False
     st.session_state.to_sale_page_button_state = False
     st.session_state.confirm_offer_btn_state = False
+    st.session_state.insert_sale_his_state = False
 
 model_mapping = {
     'Fiesta': 0,
@@ -114,7 +115,9 @@ with st.container(border=False):
     to_sale_history_btn = st.button('Go to sale history', use_container_width=True)
     
     if to_sale_history_btn:
-        st.switch_page('pages/sale_history.py')
+        st.session_state.insert_sale_his_state = False
+        with st.spinner('Loading...'):
+            st.switch_page('pages/sale_history.py')
 
 with st.container(border=True):
     st.title(f'Welcome {user_data[1]} to Sale page', anchor=False)
@@ -193,23 +196,26 @@ if st.session_state.ai_offer_price:
         if st.session_state.accept_btn_state:
             try:
                 try:
-                    save_image(uploaded_file, file_name)
-                    car_id = find_car_id(model, produc_year, engine_size, mile_per_gal, transmission_mapping[trans], fuel_mapping[fuel])
-                    format_insert_data = f"'{user_id}', 'user confirm', '{file_name}', '{mile_used}', '{ai_offer_price}', null, null, '{license_plate}', '{car_id}'"
-                    con.insertData(table='sales_history', primary_key=max_sale_his_primary+1, values=format_insert_data)
-                    alert_box.success('Data saved please wait response from admin', icon='✅')
-                    
-                    col1_container.empty()
-                    col2_container.empty()
-                    to_sale_page_button = st.button('Go to sales history', use_container_width=True)
-                    if to_sale_page_button:
-                        st.session_state.accept_btn_state = False
-                        st.session_state.to_sale_page_button_state = True
+                    with st.spinner('Loading...'):
+                        save_image(uploaded_file, file_name)
+                        car_id = find_car_id(model, produc_year, engine_size, mile_per_gal, transmission_mapping[trans], fuel_mapping[fuel])
+                        format_insert_data = f"'{user_id}', 'user confirm', '{file_name}', '{mile_used}', '{ai_offer_price}', null, null, '{license_plate}', '{car_id}'"
+                        
+                        if st.session_state.insert_sale_his_state == False:
+                            st.session_state.insert_sale_his_state = con.insertData(table='sales_history', primary_key=max_sale_his_primary+1, values=format_insert_data)
+                        alert_box.success('Data saved please wait response from admin', icon='✅')
+                        
+                        col1_container.empty()
+                        col2_container.empty()
+                        to_sale_page_button = st.button('Go to sales history', use_container_width=True)
+                        if to_sale_page_button:
+                            st.session_state.accept_btn_state = False
+                            st.session_state.to_sale_page_button_state = True
+                            st.session_state.insert_sale_his_state = False
                 except:
                     alert_box.error('Database Error', icon="⚠️")
             except:
                 alert_box.warning('Please fill number', icon="⚠️")
-            
         
         if st.session_state.offer_btn_state:
             col1_container.empty()
@@ -224,31 +230,33 @@ if st.session_state.ai_offer_price:
                 try:
                     user_offer_price = int(user_offer_price)
                     try:
-                        save_image(uploaded_file, file_name)
-                        car_id = find_car_id(model, produc_year, engine_size, mile_per_gal, transmission_mapping[trans], fuel_mapping[fuel])
-                        format_insert_data = f"'{user_id}', 'user offer', '{file_name}', '{mile_used}', '{ai_offer_price}', '{user_offer_price}', null, '{license_plate}', '{car_id}'"
-                        con.insertData(table='sales_history', primary_key=max_sale_his_primary+1, values=format_insert_data)
-                        alert_box.success('Data saved please wait response from admin', icon='✅')
-                        
-                        confirm_offer_btn_container.empty()
-                        col1_container.empty()
-                        col2_container.empty()
-                        to_sale_page_button = st.button('Go to sales history', use_container_width=True)
-                        print(st.session_state.confirm_offer_btn_state)
-                        if to_sale_page_button:
-                            print('Good')
-                            st.session_state.confirm_offer_btn_state = False
-                            st.session_state.to_sale_page_button_state = True
-                            st.session_state.offer_btn_state = False
+                        with st.spinner('Loading...'):
+                            save_image(uploaded_file, file_name)
+                            car_id = find_car_id(model, produc_year, engine_size, mile_per_gal, transmission_mapping[trans], fuel_mapping[fuel])
+                            format_insert_data = f"'{user_id}', 'user offer', '{file_name}', '{mile_used}', '{ai_offer_price}', '{user_offer_price}', null, '{license_plate}', '{car_id}'"
+                            if st.session_state.insert_sale_his_state == False:
+                                st.session_state.insert_sale_his_state = con.insertData(table='sales_history', primary_key=max_sale_his_primary+1, values=format_insert_data)
+                            alert_box.success('Data saved please wait response from admin', icon='✅')
+                            confirm_offer_btn_container.empty()
+                            col1_container.empty()
+                            col2_container.empty()
+                            to_sale_page_button = st.button('Go to sales history', use_container_width=True)
+                            if to_sale_page_button:
+                                print('Good')
+                                st.session_state.confirm_offer_btn_state = False
+                                st.session_state.to_sale_page_button_state = True
+                                st.session_state.offer_btn_state = False
+                                st.session_state.insert_sale_his_state = False
                     except:
                         alert_box.error('Database Error', icon="⚠️")
                 except:
                     alert_box.warning('Please fill number', icon="⚠️")
         
         if st.session_state.to_sale_page_button_state:
-            st.session_state.ai_offer_price = None
-            st.session_state.to_sale_page_button_state = False
-            st.switch_page('pages/sale_history.py')
+            with st.spinner('Loading...'):
+                st.session_state.ai_offer_price = None
+                st.session_state.to_sale_page_button_state = False
+                st.switch_page('pages/sale_history.py')
 
 
 
